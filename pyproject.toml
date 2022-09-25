@@ -9,6 +9,7 @@ python = "~3.10.6"
 apscheduler = "^3.9.1"
 bilibili-api-python = "^12.5.1"
 pyinstaller = "^5.4.1"
+loguru = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^22.8.0", allow-prereleases = true}

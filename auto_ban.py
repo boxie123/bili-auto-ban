@@ -5,9 +5,12 @@ from typing import Dict, TypedDict
 from apscheduler.jobstores.base import ConflictingIdError
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from bilibili_api import Credential, live, sync
+from loguru import logger
 
 import login
 
+
+logger.add('log_{time}.log', rotation='00:00')
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
@@ -60,9 +63,9 @@ async def ban(uid: int, name: str):
     """
     res = await live_room.ban_user(uid)
     if not res:
-        print(f"已禁言 {name}")
+        logger.success("已禁言 {}", name)
     else:
-        print(res)
+        logger.warning("禁言失败，resp如下：\n{}", res)
 
 
 async def new_user_list(uid: int, name: str):
@@ -81,9 +84,9 @@ async def new_user_list(uid: int, name: str):
     # 开启一个监控，每 3 秒检测一次是否超时
     try:
         sched.add_job(check, "interval", seconds=3, args=[uid], id=str(uid))
+        logger.info("正在监测 {} 弹幕活动", name)
     except ConflictingIdError:
-        print(f"{name}重复抽奖，已重置监测数据")
-    print(f"正在监测{name}弹幕活动")
+        logger.info("{} 重复抽奖，已重置监测数据", name)
 
 
 async def update_user_list(uid: int):
