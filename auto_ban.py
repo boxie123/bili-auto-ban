@@ -3,6 +3,7 @@ import time
 from typing import Dict, TypedDict
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.jobstores.base import ConflictingIdError
 from bilibili_api import Credential, live, sync
 
 import login
@@ -82,7 +83,10 @@ async def new_user_list(uid: int, name: str):
         danmu_num=0,
     )
     # 开启一个监控，每 3 秒检测一次是否超时
-    sched.add_job(check, "interval", seconds=3, args=[uid], id=str(uid))
+    try:
+        sched.add_job(check, "interval", seconds=3, args=[uid], id=str(uid))
+    except ConflictingIdError:
+        print(f"{name}重复抽奖，已重置监测数据")
     print(f"正在监测{name}弹幕活动")
 
 
