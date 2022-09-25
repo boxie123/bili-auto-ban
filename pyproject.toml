@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "bili-auto-ban"
+version = "0.1.0"
+description = "自动将bilibili直播间抢红包机器人禁言"
+authors = ["铂屑 <80164656+boxie123@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "~3.10.6"
+apscheduler = "^3.9.1"
+bilibili-api-python = "^12.5.1"
+pyinstaller = "^5.4.1"
+
+[tool.poetry.dev-dependencies]
+black = {version = "^22.8.0", allow-prereleases = true}
+flake8 = "^5.0.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+default = true
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
