@@ -2,21 +2,18 @@ import json
 import time
 from typing import Dict, TypedDict
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.base import ConflictingIdError
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from bilibili_api import Credential, live, sync
 
 import login
 
-lottery_danmu_list = [
-    "老板大气！点点红包抽礼物",
-    "点点红包，关注主播抽礼物～",
-    "喜欢主播加关注，点点红包抽礼物",
-    "红包抽礼物，开启今日好运！",
-    "中奖喷雾！中奖喷雾！",
-]
-with open("emoji.json", "r", encoding="utf-8") as f:
-    emoji_list = json.load(f)
+
+with open("config.json", "r", encoding="utf-8") as f:
+    config = json.load(f)
+    room_id = config["room_id"]
+    lottery_danmu_list = config["lottery_danmu_list"]
+    emoji_list = config["emoji"]
 
 
 class Lottery(TypedDict):
@@ -30,7 +27,6 @@ class Lottery(TypedDict):
     danmu_num: int
 
 
-room_id = 1184275
 # room_id = 22140083  # 阿屑的直播间号
 room = live.LiveDanmaku(room_id)  # wss连接到直播间弹幕
 user_list: Dict[int, Lottery] = dict()  # 监测用户列表以及数据记录
