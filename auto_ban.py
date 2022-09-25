@@ -9,8 +9,7 @@ from loguru import logger
 
 import login
 
-
-logger.add('log_{time}.log', rotation='00:00')
+logger.add("./log/log_{time}.log", rotation="00:00")
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
@@ -127,7 +126,7 @@ async def on_danmaku(event):
     info = event["data"]["info"]
     medal = info[3]
     # 脚本检测
-    if (not medal) or (medal[3] != 1184275):  # 不戴鸽宝牌子的小心点捏
+    if (not medal) or (medal[3] != room_id):  # 不戴鸽宝牌子的小心点捏
         danmu = info[1]
         uid = info[2][0]
         name = info[2][1]
