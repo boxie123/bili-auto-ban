@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 bzcookies.txt
 pack.cmd
+danmu_event.json
