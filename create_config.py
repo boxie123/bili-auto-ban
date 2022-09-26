@@ -1,11 +1,14 @@
-{
+import json
+import os
+
+config = {
     "room_id": 1184275,
     "lottery_danmu_list": [
         "老板大气！点点红包抽礼物",
         "点点红包，关注主播抽礼物～",
         "喜欢主播加关注，点点红包抽礼物",
         "红包抽礼物，开启今日好运！",
-        "中奖喷雾！中奖喷雾！"
+        "中奖喷雾！中奖喷雾！",
     ],
     "emoji": [
         "( ゜- ゜)つロ",
@@ -47,7 +50,7 @@
         "(￣ε(#￣) Σ",
         "(╯°口°)╯(┴—┴",
         "ヽ(`Д´)ﾉ",
-        "(\"▔□▔)/",
+        '("▔□▔)/',
         "(º﹃º )",
         "(๑>؂<๑）",
         "｡ﾟ(ﾟ´Д｀)ﾟ｡",
@@ -96,7 +99,16 @@
         "就这",
         "上热榜",
         "中奖喷雾",
-        "我不理解"
+        "我不理解",
     ],
-    "excluded": ["赞"]
+    "excluded": ["赞"],
 }
+
+
+def create_config():
+    if not os.path.exists("config.json"):
+        with open("config.json", "w", encoding="utf-8") as f:
+            json.dump(config, f, ensure_ascii=False)
+        return True
+    else:
+        return False

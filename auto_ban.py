@@ -8,8 +8,14 @@ from bilibili_api import Credential, live, sync
 from loguru import logger
 
 import login
+from create_config import create_config
 
 logger.add("./log/log_{time}.log", rotation="00:00")
+
+if create_config():
+    logger.info("配置文件不存在，已使用模板新建")
+else:
+    logger.info("配置文件已存在")
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
