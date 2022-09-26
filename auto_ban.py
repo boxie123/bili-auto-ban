@@ -134,18 +134,19 @@ async def on_danmaku(event):
     medal = info[3]
     guard = info[7]
     # 脚本检测
-    if (not guard) and (not medal) or (medal[3] != room_id):  # 不戴鸽宝牌子的小心点捏
-        danmu = info[1]
-        uid = info[2][0]
-        name = info[2][1]
-        if danmu in lottery_danmu_list:
-            await new_user_list(uid, name)  # 抽奖就开始监测
-        elif danmu in excluded_list:  # 排除列表
-            pass
-        elif danmu in emoji_list:
-            await update_user_list(uid)  # 发表情包更新记录数量
-        else:
-            await zero_user_list(uid)  # 发其他弹幕则记录数量归零
+    if not guard:
+        if (not medal) or (medal[3] != room_id):  # 不戴鸽宝牌子的小心点捏
+            danmu = info[1]
+            uid = info[2][0]
+            name = info[2][1]
+            if danmu in lottery_danmu_list:
+                await new_user_list(uid, name)  # 抽奖就开始监测
+            elif danmu in excluded_list:  # 排除列表
+                pass
+            elif danmu in emoji_list:
+                await update_user_list(uid)  # 发表情包更新记录数量
+            else:
+                await zero_user_list(uid)  # 发其他弹幕则记录数量归零
 
 
 async def check(uid: int):
