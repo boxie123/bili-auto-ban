@@ -4,11 +4,12 @@ from typing import Dict, TypedDict
 
 from apscheduler.jobstores.base import ConflictingIdError
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from bilibili_api import Credential, live, sync
+from bilibili_api import live, sync
 from loguru import logger
 
-import login
 from create_config import create_config
+from login_by_bilibili_api import login_and_save_in_file
+
 
 logger.add("./log/log_{time}.log", rotation="00:00")
 
@@ -43,19 +44,13 @@ sched = AsyncIOScheduler(timezone="Asia/Shanghai")  # 定时任务框架
 
 
 def login_room():
-    """通过 login.py 登录到 LiveRoom
+    """通过 login_by_bilibili_api.py 登录到 LiveRoom
 
     Returns:
         LiveRoom: bilibili_api 包的直播间操作类
     """
-    cookies = login.bzlogin()
-
-    SESSDATA = cookies["SESSDATA"]
-    BILI_JCT = cookies["bili_jct"]
-    BUVID3 = cookies["buvid3"]
-
     # 实例化 Credential 类
-    credential = Credential(sessdata=SESSDATA, bili_jct=BILI_JCT, buvid3=BUVID3)
+    credential = login_and_save_in_file()
     live_room = live.LiveRoom(room_id, credential)
     return live_room
 
