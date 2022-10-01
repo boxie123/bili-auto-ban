@@ -46,14 +46,13 @@ def login_by_sms():
 
 
 def login_by_qrcode():
-    print("请登录：")
+    print("请使用 哔哩哔哩 APP 扫描弹出窗口中二维码！")
     credential = login_with_qrcode()
     try:
         credential.raise_for_no_bili_jct()  # 判断是否成功
         credential.raise_for_no_sessdata()  # 判断是否成功
     except CredentialNoBiliJctException:
-        print("登陆失败。。。")
-        exit()
+        print("登陆失败，请尝试重新登陆")
     return credential
 
 
@@ -88,7 +87,7 @@ def main_login():
         return credential
 
 
-def login_and_save_in_file():
+def login_and_save_in_file() -> Credential:
     nowdir = os.getcwd()
     result_file = os.path.join(nowdir, "bili_credential.json")
     if not os.path.exists(result_file):
@@ -97,22 +96,25 @@ def login_and_save_in_file():
     with open(result_file, "r", encoding="utf-8") as f:
         c = json.load(f)
 
-    try:
-        credential = Credential(
-            sessdata=c["SESSDATA"],
-            bili_jct=c["bili_jct"],
-            buvid3=c["buvid3"],
-            dedeuserid=c["DedeUserID"],
-        )
-        print("cookies 存在，已登录")
-    except KeyError:
-        credential = main_login()
-        with open(result_file, "w", encoding="utf-8") as f:
-            json.dump(credential.get_cookies(), f)
+    while True:
+        try:
+            credential = Credential(
+                sessdata=c["SESSDATA"],
+                bili_jct=c["bili_jct"],
+                buvid3=c["buvid3"],
+                dedeuserid=c["DedeUserID"],
+            )
+            assert sync(credential.check_valid())
+            print("cookies 存在且有效，已登录")
+            break
+        except (KeyError, AssertionError):
+            print("cookies 值无效，请登录")
+            credential = main_login()
+            with open(result_file, "w", encoding="utf-8") as f:
+                json.dump(credential.get_cookies(), f)
 
     return credential
 
 
 if __name__ == "__main__":
     credential = login_and_save_in_file()
-    print(credential.get_cookies())
