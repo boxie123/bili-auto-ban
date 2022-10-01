@@ -93,10 +93,10 @@ def login_and_save_in_file() -> Credential:
     if not os.path.exists(result_file):
         with open(result_file, "w") as f:
             json.dump(dict(), f)
-    with open(result_file, "r", encoding="utf-8") as f:
-        c = json.load(f)
 
     while True:
+        with open(result_file, "r", encoding="utf-8") as f:
+            c = json.load(f)
         try:
             credential = Credential(
                 sessdata=c["SESSDATA"],
