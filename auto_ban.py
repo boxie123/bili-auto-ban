@@ -4,7 +4,7 @@ from typing import Dict, TypedDict
 
 from apscheduler.jobstores.base import ConflictingIdError
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from bilibili_api import live, sync
+from bilibili_api import live, sync, user
 from loguru import logger
 
 from create_config import create_config
@@ -51,6 +51,8 @@ def login_room():
     """
     # 实例化 Credential 类
     credential = login_and_save_in_file()
+    name = sync(user.get_self_info(credential))["name"]
+    logger.success("cookies 存在且有效，欢迎，{} ！", name)
     live_room = live.LiveRoom(room_id, credential)
     return live_room
 

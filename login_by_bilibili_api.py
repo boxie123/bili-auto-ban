@@ -1,15 +1,8 @@
-import os
 import json
+import os
 
-from bilibili_api import CredentialNoBiliJctException, settings, sync, Credential
-from bilibili_api.login import (
-    Check,
-    PhoneNumber,
-    login_with_password,
-    login_with_qrcode,
-    login_with_sms,
-    send_sms,
-)
+from bilibili_api import (Credential, CredentialNoBiliJctException, login,
+                          settings, sync)
 from bilibili_api.user import get_self_info
 
 
@@ -18,11 +11,11 @@ def login_by_password():
     username = input("请输入手机号/邮箱：")
     password = input("请输入密码：")
     print("正在登录。")
-    c = login_with_password(username, password)
-    if isinstance(c, Check):
+    c = login.login_with_password(username, password)
+    if isinstance(c, login.Check):
         # 还需验证
         phone = input("需要验证。请输入手机号：")
-        c.set_phone(PhoneNumber(phone, country="+86"))  # 默认设置地区为中国大陆
+        c.set_phone(login.PhoneNumber(phone, country="+86"))  # 默认设置地区为中国大陆
         c.send_code()
         print("已发送验证码。")
         code = input("请输入验证码：")
@@ -37,9 +30,9 @@ def login_by_sms():
     # 验证码登录
     phone = input("请输入手机号：")
     print("正在登录。")
-    send_sms(PhoneNumber(phone, country="+86"))  # 默认设置地区为中国大陆
+    login.send_sms(login.PhoneNumber(phone, country="+86"))  # 默认设置地区为中国大陆
     code = input("请输入验证码：")
-    c = login_with_sms(PhoneNumber(phone, country="+86"), code)
+    c = login.login_with_sms(login.PhoneNumber(phone, country="+86"), code)
     credential = c
     print("登录成功")
     return credential
@@ -47,7 +40,7 @@ def login_by_sms():
 
 def login_by_qrcode():
     print("请使用 哔哩哔哩 APP 扫描弹出窗口中二维码！")
-    credential = login_with_qrcode()
+    credential = login.login_with_qrcode()
     try:
         credential.raise_for_no_bili_jct()  # 判断是否成功
         credential.raise_for_no_sessdata()  # 判断是否成功
@@ -105,7 +98,6 @@ def login_and_save_in_file() -> Credential:
                 dedeuserid=c["DedeUserID"],
             )
             assert sync(credential.check_valid())
-            print("cookies 存在且有效，已登录")
             break
         except (KeyError, AssertionError):
             print("cookies 值无效，请登录")
