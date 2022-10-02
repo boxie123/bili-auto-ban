@@ -16,12 +16,11 @@ logger.add("./log/log_{time}.log", rotation="00:00")
 if create_config():
     logger.info("配置文件不存在，已使用模板新建")
 else:
-    logger.info("配置文件已存在")
+    logger.info("配置文件已存在，正在读取")
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
     room_id = config["room_id"]
-    lottery_danmu_list = config["lottery_danmu_list"]
     emoji_list = config["emoji"]
     excluded_list = config["excluded"]
 
@@ -136,7 +135,9 @@ async def on_danmaku(event):
             danmu = info[1]
             uid = info[2][0]
             name = info[2][1]
-            if danmu in lottery_danmu_list:
+            activity_source = info[0][16]["activity_source"]
+            if activity_source:
+                logger.info("{} 参与抽奖，activity_source 为 {}", name, activity_source)
                 await new_user_list(uid, name)  # 抽奖就开始监测
             elif danmu in excluded_list:  # 排除列表
                 pass
